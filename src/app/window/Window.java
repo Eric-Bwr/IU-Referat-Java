@@ -1,6 +1,5 @@
 package app.window;
 
-import app.math.Vec4f;
 import app.util.Log;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -71,6 +70,16 @@ public class Window {
             Log.logInfo("Neither OpenGL 3.2 nor OpenGL 2.1 is supported");
         }
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    }
+
+    public void initCallbacks(GLFWWindowSizeCallback windowSizeCallback,
+                              GLFWKeyCallback keyCallback,
+                              GLFWMouseButtonCallback mouseButtonCallback,
+                              GLFWCursorPosCallback cursorPosCallback) {
+        glfwSetWindowSizeCallback(window, windowSizeCallback);
+        glfwSetKeyCallback(window, keyCallback);
+        glfwSetMouseButtonCallback(window, mouseButtonCallback);
+        glfwSetCursorPosCallback(window, cursorPosCallback);
     }
 
     public void swapBuffers() {
