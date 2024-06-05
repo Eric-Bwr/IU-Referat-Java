@@ -7,6 +7,6 @@ public class WindowConfig {
     public int width = 800;
     public int height = 600;
     public String windowIconPath = "";
-    public boolean vsync = false;
+    public boolean vsync = true;
     public Vec4f clearColor = new Vec4f(0.5f, 0.5f, 0.5f, 1f);
 }

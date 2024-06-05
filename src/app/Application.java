@@ -1,5 +1,6 @@
 package app;
 
+import app.scene.SceneManager;
 import app.util.Log;
 import app.window.Window;
 import app.window.WindowConfig;
@@ -8,7 +9,7 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Application {
@@ -19,9 +20,14 @@ public class Application {
     private GLFWMouseButtonCallback mouseButtonCallback;
     private GLFWCursorPosCallback cursorPosCallback;
 
+    private SceneManager sceneManager;
+
+    private int polygonMode = GL_FILL;
+
     public Application() {
         WindowConfig windowConfig = new WindowConfig();
         window = new Window(windowConfig);
+        sceneManager = new SceneManager();
 
         windowSizeCallback = new GLFWWindowSizeCallback() {
             @Override
@@ -32,7 +38,18 @@ public class Application {
         keyCallback = new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
-                Log.log(key);
+                if (action == GLFW_PRESS) {
+                    if (key == GLFW_KEY_ESCAPE) {
+                        glfwSetWindowShouldClose(window, true);
+                    } else if (key == GLFW_KEY_LEFT) {
+                        sceneManager.prevScene();
+                    } else if (key == GLFW_KEY_RIGHT) {
+                        sceneManager.nextScene();
+                    } else if (key == GLFW_KEY_RIGHT_SHIFT) {
+                        polygonMode = polygonMode == GL_FILL ? GL_LINE : GL_FILL;
+                        glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+                    }
+                }
             }
         };
         mouseButtonCallback = new GLFWMouseButtonCallback() {
@@ -49,20 +66,23 @@ public class Application {
         };
     }
 
-    public void init(){
+    public void init() {
         window.initWindow();
         window.initCallbacks(windowSizeCallback, keyCallback, mouseButtonCallback, cursorPosCallback);
+        sceneManager.init();
     }
 
     public void run() {
-        while(!window.shouldClose()) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glfwPollEvents();
+        while (!window.shouldClose()) {
+            glClear(GL_COLOR_BUFFER_BIT);
+            sceneManager.render();
             window.swapBuffers();
+            glfwPollEvents();
         }
     }
 
     public void end() {
+        sceneManager.end();
         window.terminate();
     }
 }

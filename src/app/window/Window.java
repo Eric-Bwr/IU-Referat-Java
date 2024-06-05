@@ -36,9 +36,7 @@ public class Window {
         glfwShowWindow(window);
         glfwFocusWindow(window);
         GL.createCapabilities();
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_DEPTH_TEST);
         glClearColor(config.clearColor.x(), config.clearColor.y(), config.clearColor.z(), config.clearColor.w());
         if (config.vsync)
             glfwSwapInterval(1);
@@ -58,10 +56,10 @@ public class Window {
         glfwDefaultWindowHints();
         if (caps.OpenGL46) {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-            Log.logInfo("Loading OpenGL 3.2");
+            Log.logInfo("Loading OpenGL 4.6");
         } else if (caps.OpenGL21) {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
