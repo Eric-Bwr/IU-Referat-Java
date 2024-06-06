@@ -19,6 +19,7 @@ public class C_QuadScene extends Scene {
                 -1, -1,
                 -1, +1,
                 +1, -1,
+
                 -1, +1,
                 +1, +1,
                 +1, -1,

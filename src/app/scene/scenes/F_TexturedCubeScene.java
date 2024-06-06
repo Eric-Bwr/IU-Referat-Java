@@ -25,7 +25,7 @@ public class F_TexturedCubeScene extends Scene3D {
     public F_TexturedCubeScene(){
         vertexCount = 6 * 6;
         data = new float[] {
-                // V-XYZ T-XY F
+                // V-XYZ T-XY  F
                 // Front
                 0, 0, 1, 0, 0, 0,
                 1, 0, 1, 1, 0, 0,

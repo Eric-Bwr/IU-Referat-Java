@@ -18,7 +18,6 @@ public class SceneManager {
 
     public SceneManager() {
         addScene(new A_TriangleScene());
-        addScene(new Slide("Dirt.png"));
         addScene(new B_HalfQuadScene());
         addScene(new C_QuadScene());
         addScene(new D_ThreeDQuadScene());
@@ -31,7 +30,7 @@ public class SceneManager {
 
     public void init(long window, int width, int height) {
         this.window = window;
-        selectCurrentScene(scenes.size() - 1);
+        selectCurrentScene(0);
         for (Scene scene : scenes) {
             scene.init(width, height);
         }

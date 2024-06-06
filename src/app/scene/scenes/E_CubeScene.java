@@ -18,7 +18,7 @@ public class E_CubeScene extends Scene3D {
     public E_CubeScene() {
         vertexCount = 6 * 6;
         data = new float[]{
-                // X    Y      Z     I
+                // X Y Z I
                 // Front
                 0, 0, 1, 1,
                 1, 0, 1, 1,
