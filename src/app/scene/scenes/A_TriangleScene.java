@@ -13,21 +13,25 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 public class A_TriangleScene extends Scene {
 
+    public A_TriangleScene() {
+        vertexCount = 3;
+        data = new float[]{
+                -1, -1,
+                +0, +1,
+                +1, -1
+        };
+        layout = new VertexBufferObjectLayout();
+        layout.pushFloat(2);
+    }
+
     @Override
     public void init(int width, int height) {
-        shader = new Shader("/res/shaders/Triangle.glsl");
+        shader = new Shader("A-C.glsl");
         shader.bind();
         shader.setUniform2f("windowSize", new Vec2f(width, height));
+
         vao = new VertexArrayObject();
-        vertexCount = 3;
-        float[] data = {
-                -1.0f, -1.0f,
-                0.0f, 1.0f,
-                1.0f, -1.0f
-        };
         VertexBufferObject vbo = new VertexBufferObject(data, GL_STATIC_DRAW);
-        VertexBufferObjectLayout layout = new VertexBufferObjectLayout();
-        layout.pushFloat(2);
         vao.addBuffer(vbo, layout);
     }
 

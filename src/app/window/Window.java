@@ -24,10 +24,8 @@ public class Window {
             Log.logError("Failed to init GLFW!");
             glfwTerminate();
         }
-
+        initHints();
         handle = glfwCreateWindow(config.width, config.height, config.title, NULL, NULL);
-        GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(handle, (vidMode.width() - config.width) / 2, (vidMode.height() - config.height) / 2);
         if (handle == NULL) {
             Log.logError("Failed to create app.Window!");
             glfwTerminate();

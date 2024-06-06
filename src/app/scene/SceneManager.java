@@ -6,7 +6,8 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 
 public class SceneManager {
 
@@ -17,10 +18,14 @@ public class SceneManager {
 
     public SceneManager() {
         addScene(new A_TriangleScene());
+        addScene(new Slide("Dirt.png"));
         addScene(new B_HalfQuadScene());
         addScene(new C_QuadScene());
         addScene(new D_ThreeDQuadScene());
         addScene(new E_CubeScene());
+        addScene(new F_TexturedCubeScene());
+        addScene(new G_MultiDirtScene());
+        addScene(new H_IndividualFacesScene());
     }
 
     public void init(long window, int width, int height) {
@@ -36,6 +41,7 @@ public class SceneManager {
     }
 
     public void update() {
+        glfwPollEvents();
         if (currentScene == null) {
             return;
         }
@@ -43,10 +49,12 @@ public class SceneManager {
     }
 
     public void render() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         if (currentScene == null) {
             return;
         }
         currentScene.render();
+        glfwSwapBuffers(window);
     }
 
     public void end() {
@@ -71,7 +79,6 @@ public class SceneManager {
         if (index < scenes.size()) {
             currentSceneIndex = index;
             currentScene = scenes.get(currentSceneIndex);
-            glfwSetWindowTitle(window, "Folie / Szene: " + (currentSceneIndex + 1));
         }
     }
 
@@ -100,5 +107,9 @@ public class SceneManager {
             return;
         }
         currentScene.mouseButtonEvent(button, action);
+    }
+
+    public int getCurrentSceneIndex() {
+        return currentSceneIndex;
     }
 }

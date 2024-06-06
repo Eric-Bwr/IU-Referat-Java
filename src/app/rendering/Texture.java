@@ -1,59 +1,55 @@
 package app.rendering;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_LOD_BIAS;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
+import static org.lwjgl.stb.STBImage.*;
+
+import org.lwjgl.BufferUtils;
+
 public class Texture {
 
-    private int id;
+    private int id, width, height;
     private String path;
-    private float lodBias = -0.4f;
-    //TODO: Implement Texture Atlases
 
-    public Texture(String path) {
+    public Texture(String path, boolean flip) {
         try {
             this.path = path;
-            String texturePath = System.getProperty("user.dir") + path;
-            System.out.println("Loading texture: " + texturePath);
-            BufferedImage image = ImageIO.read(new File(texturePath));
-            int[] pixels = new int[image.getWidth() * image.getHeight()];
-            image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
-            ByteBuffer buffer = ByteBuffer.allocateDirect(image.getWidth() * image.getHeight() * 4);
-            for(int y = 0; y < image.getHeight(); y++){
-                for(int x = 0; x < image.getWidth(); x++){
-                    int pixel = pixels[y * image.getWidth() + x];
-                    buffer.put((byte) ((pixel >> 16) & 0xFF));
-                    buffer.put((byte) ((pixel >> 8) & 0xFF));
-                    buffer.put((byte) (pixel & 0xFF));
-                    buffer.put((byte) ((pixel >> 24) & 0xFF));
-                }
+            String texturePath = System.getProperty("user.dir") + "/res/textures/" + path;
+
+            IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
+            IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
+            IntBuffer compBuffer = BufferUtils.createIntBuffer(1);
+
+            stbi_set_flip_vertically_on_load(flip);
+            ByteBuffer data = stbi_load(texturePath, widthBuffer, heightBuffer, compBuffer, 4);
+
+            if (data == null) {
+                throw new RuntimeException("Failed to load texture: " + stbi_failure_reason());
             }
-            buffer.flip();
+
+            width = widthBuffer.get();
+            height = heightBuffer.get();
 
             id = glGenTextures();
             glBindTexture(GL_TEXTURE_2D, id);
 
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	        glGenerateMipmap(GL_TEXTURE_2D);
-	        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, lodBias);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public int getID(){
+    public int getID() {
         return id;
     }
 
@@ -61,15 +57,7 @@ public class Texture {
         return path;
     }
 
-	public float getLodBias() {
-		return lodBias;
-	}
-
-	public void setLodBias(float lodBias) {
-		this.lodBias = lodBias;
-	}
-
-	public void bind() {
+    public void bind() {
         glBindTexture(GL_TEXTURE_2D, id);
     }
 

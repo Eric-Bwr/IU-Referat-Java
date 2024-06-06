@@ -13,38 +13,37 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 public class B_HalfQuadScene extends Scene {
 
-    private VertexArrayObject vao;
-    private VertexBufferObject vbo;
-    private VertexBufferObjectLayout layout;
-    private Shader shader;
+    public B_HalfQuadScene() {
+        vertexCount = 3;
+        data = new float[]{
+                -1, -1,
+                -1, +1,
+                +1, -1,
+        };
+        layout = new VertexBufferObjectLayout();
+        layout.pushFloat(2);
+    }
 
     @Override
     public void init(int width, int height) {
-        shader = new Shader("/res/shaders/Triangle.glsl");
+        shader = new Shader("A-C.glsl");
         shader.bind();
         shader.setUniform2f("windowSize", new Vec2f(width, height));
+
         vao = new VertexArrayObject();
-        float[] data = {
-                -1.0f, -1.0f,
-                -1.0f, 1.0f,
-                1.0f, -1.0f,
-        };
-        vbo = new VertexBufferObject(data, GL_STATIC_DRAW);
-        layout = new VertexBufferObjectLayout();
-        layout.pushFloat(2);
+        VertexBufferObject vbo = new VertexBufferObject(data, GL_STATIC_DRAW);
         vao.addBuffer(vbo, layout);
     }
 
     @Override
     public void update() {
-
     }
 
     @Override
     public void render() {
         shader.bind();
         vao.bind();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     }
 
     @Override

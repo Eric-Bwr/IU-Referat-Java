@@ -9,7 +9,6 @@ import app.rendering.buffer.VertexBufferObject;
 import app.rendering.buffer.VertexBufferObjectLayout;
 import app.math.Vec3f;
 import app.scene.Scene3D;
-import org.lwjgl.glfw.GLFW;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
@@ -17,50 +16,36 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 public class D_ThreeDQuadScene extends Scene3D {
 
+    public D_ThreeDQuadScene(){
+        vertexCount = 6;
+        data = new float[]{
+                0, 0,
+                0, 1,
+                1, 0,
+                0, 1,
+                1, 1,
+                1, 0,
+        };
+        layout = new VertexBufferObjectLayout();
+        layout.pushFloat(2);
+    }
+
     @Override
     public void init(int width, int height) {
-        camera = new CameraFPS(new Vec3f(0, 0, 0), 0f, 0f);
-        shader = new Shader("/res/shaders/3DTriangle.glsl");
+        camera = new CameraFPS(new Vec3f(0, 0, 8.0f), 0f, 0f);
+        shader = new Shader("D.glsl");
         shader.bind();
         shader.setUniform2f("windowSize", new Vec2f(width, height));
         shader.setUniformMat4f("projection", Mat4f.projection(FOV, width, height, NEAR, FAR, null));
-        vao = new VertexArrayObject();
-        vertexCount = 6;
-        float[] data = {
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f,
-        };
 
+        vao = new VertexArrayObject();
         VertexBufferObject vbo = new VertexBufferObject(data, GL_STATIC_DRAW);
-        VertexBufferObjectLayout layout = new VertexBufferObjectLayout();
-        layout.pushFloat(2);
         vao.addBuffer(vbo, layout);
     }
 
     @Override
     public void update() {
-        if (isKeyPressed(GLFW.GLFW_KEY_W)) {
-            camera.moveForward(MOVE_SPEED);
-        }
-        if (isKeyPressed(GLFW.GLFW_KEY_S)) {
-            camera.moveBackwards(MOVE_SPEED);
-        }
-        if (isKeyPressed(GLFW.GLFW_KEY_A)) {
-            camera.moveLeft(MOVE_SPEED);
-        }
-        if (isKeyPressed(GLFW.GLFW_KEY_D)) {
-            camera.moveRight(MOVE_SPEED);
-        }
-        if (isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
-            camera.moveUp(MOVE_SPEED);
-        }
-        if (isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
-            camera.moveDown(MOVE_SPEED);
-        }
+        handleCameraMovementControl();
     }
 
     @Override
@@ -84,9 +69,7 @@ public class D_ThreeDQuadScene extends Scene3D {
 
     @Override
     public void mousePositionEvent(double x, double y) {
-        camera.rotate((float) (oldMouseX - x), (float) (oldMouseY - y), SENSITIVITY);
-        oldMouseX = x;
-        oldMouseY = y;
+        handleCameraMouseControl(x, y);
     }
 
     @Override

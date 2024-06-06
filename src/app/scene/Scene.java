@@ -2,11 +2,14 @@ package app.scene;
 
 import app.rendering.Shader;
 import app.rendering.buffer.VertexArrayObject;
+import app.rendering.buffer.VertexBufferObjectLayout;
 
 public abstract class Scene {
 
     protected Shader shader;
     protected int vertexCount;
+    protected float[] data;
+    protected VertexBufferObjectLayout layout;
     protected VertexArrayObject vao;
     protected final boolean[] keys = new boolean[512];
 

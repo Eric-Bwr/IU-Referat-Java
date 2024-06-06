@@ -28,7 +28,7 @@ public class Shader {
         StringBuilder vertexBuffer = new StringBuilder();
         StringBuilder fragmentBuffer = new StringBuilder();
         try {
-            String shaderPath = System.getProperty("user.dir") + path;
+            String shaderPath = System.getProperty("user.dir") + "/res/shaders/" + path;
             BufferedReader reader = new BufferedReader(new FileReader(shaderPath));
             String buff;
             while ((buff = reader.readLine()) != null) {
@@ -76,7 +76,9 @@ public class Shader {
         glCompileShader(shader);
         int status = glGetShaderi(shader, GL20.GL_COMPILE_STATUS);
         if (status == GL11.GL_FALSE) {
-            Log.logError("Failed to compile Shader of type " + shaderType);
+            int infoLogLength = glGetShaderi(shader, GL20.GL_INFO_LOG_LENGTH);
+            String infoLog = glGetShaderInfoLog(shader, infoLogLength);
+            Log.logError("Failed to compile Shader of type " + shaderType + ": " + infoLog);
         }
         return shader;
     }

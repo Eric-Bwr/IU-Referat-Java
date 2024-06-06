@@ -13,6 +13,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Application {
 
+    private static final int TICKS_PER_SECOND = 60;
+
     private WindowConfig windowConfig;
     private Window window;
     private GLFWWindowSizeCallback windowSizeCallback;
@@ -24,6 +26,7 @@ public class Application {
 
     private int polygonMode = GL_FILL;
     private int catchMouse = GLFW_CURSOR_NORMAL;
+    private int swapInterval = 1;
 
     public Application() {
         windowConfig = new WindowConfig();
@@ -52,6 +55,9 @@ public class Application {
                     } else if (key == GLFW_KEY_TAB) {
                         catchMouse = catchMouse == GLFW_CURSOR_NORMAL ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL;
                         glfwSetInputMode(window, GLFW_CURSOR, catchMouse);
+                    } else if (key == GLFW_KEY_ENTER) {
+                        swapInterval = swapInterval == 0 ? 1 : 0;
+                        glfwSwapInterval(swapInterval);
                     }
                 }
                 sceneManager.keyEvent(key, action, mods);
@@ -80,12 +86,36 @@ public class Application {
     }
 
     public void run() {
-        while (!window.shouldClose()) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            sceneManager.update();
-            sceneManager.render();
-            window.swapBuffers();
-            glfwPollEvents();
+
+        long lastTime = System.nanoTime();
+        double unprocessed = 0;
+        double nsPerTick = 1000000000.0 / TICKS_PER_SECOND;
+        int frames = 0;
+        int fps = 0;
+        long lastTimer = System.currentTimeMillis();
+
+        while (!window.shouldClose()){
+            long now = System.nanoTime();
+            unprocessed += (now - lastTime) / nsPerTick;
+            boolean shouldRender = true;
+            lastTime = now;
+            while (unprocessed >= 1) {
+                sceneManager.update();
+                unprocessed -= 1;
+                shouldRender = true;
+                glfwSetWindowTitle(window.handle, "Folie / Szene: " + (sceneManager.getCurrentSceneIndex() + 1) + " FPS: " + fps);
+            }
+
+            if (shouldRender) {
+                frames++;
+                sceneManager.render();
+            }
+
+            if (System.currentTimeMillis() - lastTimer > 1000) {
+                lastTimer += 1000;
+                fps = frames;
+                frames = 0;
+            }
         }
     }
 
