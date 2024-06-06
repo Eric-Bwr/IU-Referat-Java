@@ -26,6 +26,7 @@ public class SceneManager {
         addScene(new F_TexturedCubeScene());
         addScene(new G_MultiDirtScene());
         addScene(new H_IndividualFacesScene());
+        addScene(new I_Terrain());
     }
 
     public void init(long window, int width, int height) {

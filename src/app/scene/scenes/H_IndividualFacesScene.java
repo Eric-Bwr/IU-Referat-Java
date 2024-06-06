@@ -17,7 +17,7 @@ public class H_IndividualFacesScene extends G_MultiDirtScene {
     public static final int FACE_TOP = 4;
     public static final int FACE_BOTTOM = 5;
 
-    private float[][] faceData = {
+    public float[][] faceData = {
             {
                     // Front
                     0, 0, 1, 0, 0, 0,
@@ -74,7 +74,7 @@ public class H_IndividualFacesScene extends G_MultiDirtScene {
             }
     };
 
-    private void addFace(int x, int y, int z, int face) {
+    public void addFace(int x, int y, int z, int face) {
         float[] faceVertices = faceData[face];
         int startIndex = data.length;
         data = Arrays.copyOf(data, startIndex + faceVertices.length);
