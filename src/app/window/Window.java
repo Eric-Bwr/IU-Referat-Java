@@ -11,7 +11,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class Window {
 
-    public long window;
+    public long handle;
 
     private WindowConfig config;
 
@@ -24,19 +24,18 @@ public class Window {
             Log.logError("Failed to init GLFW!");
             glfwTerminate();
         }
-        initHints();
-        window = glfwCreateWindow(config.width, config.height, config.title, NULL, NULL);
+
+        handle = glfwCreateWindow(config.width, config.height, config.title, NULL, NULL);
         GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(window, (vidMode.width() - config.width) / 2, (vidMode.height() - config.height) / 2);
-        if (window == NULL) {
+        glfwSetWindowPos(handle, (vidMode.width() - config.width) / 2, (vidMode.height() - config.height) / 2);
+        if (handle == NULL) {
             Log.logError("Failed to create app.Window!");
             glfwTerminate();
         }
-        glfwMakeContextCurrent(window);
-        glfwShowWindow(window);
-        glfwFocusWindow(window);
+        glfwMakeContextCurrent(handle);
+        glfwShowWindow(handle);
+        glfwFocusWindow(handle);
         GL.createCapabilities();
-        glDisable(GL_DEPTH_TEST);
         glClearColor(config.clearColor.x(), config.clearColor.y(), config.clearColor.z(), config.clearColor.w());
         if (config.vsync)
             glfwSwapInterval(1);
@@ -74,23 +73,23 @@ public class Window {
                               GLFWKeyCallback keyCallback,
                               GLFWMouseButtonCallback mouseButtonCallback,
                               GLFWCursorPosCallback cursorPosCallback) {
-        glfwSetWindowSizeCallback(window, windowSizeCallback);
-        glfwSetKeyCallback(window, keyCallback);
-        glfwSetMouseButtonCallback(window, mouseButtonCallback);
-        glfwSetCursorPosCallback(window, cursorPosCallback);
+        glfwSetWindowSizeCallback(handle, windowSizeCallback);
+        glfwSetKeyCallback(handle, keyCallback);
+        glfwSetMouseButtonCallback(handle, mouseButtonCallback);
+        glfwSetCursorPosCallback(handle, cursorPosCallback);
     }
 
     public void swapBuffers() {
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(handle);
     }
 
     public boolean shouldClose() {
-        return glfwWindowShouldClose(window);
+        return glfwWindowShouldClose(handle);
     }
 
     public void terminate() {
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
+        glfwFreeCallbacks(handle);
+        glfwDestroyWindow(handle);
         glfwTerminate();
     }
 }

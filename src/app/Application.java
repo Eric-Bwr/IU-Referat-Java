@@ -1,7 +1,6 @@
 package app;
 
 import app.scene.SceneManager;
-import app.util.Log;
 import app.window.Window;
 import app.window.WindowConfig;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -14,6 +13,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Application {
 
+    private WindowConfig windowConfig;
     private Window window;
     private GLFWWindowSizeCallback windowSizeCallback;
     private GLFWKeyCallback keyCallback;
@@ -23,9 +23,10 @@ public class Application {
     private SceneManager sceneManager;
 
     private int polygonMode = GL_FILL;
+    private int catchMouse = GLFW_CURSOR_NORMAL;
 
     public Application() {
-        WindowConfig windowConfig = new WindowConfig();
+        windowConfig = new WindowConfig();
         window = new Window(windowConfig);
         sceneManager = new SceneManager();
 
@@ -48,20 +49,24 @@ public class Application {
                     } else if (key == GLFW_KEY_RIGHT_SHIFT) {
                         polygonMode = polygonMode == GL_FILL ? GL_LINE : GL_FILL;
                         glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+                    } else if (key == GLFW_KEY_TAB) {
+                        catchMouse = catchMouse == GLFW_CURSOR_NORMAL ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL;
+                        glfwSetInputMode(window, GLFW_CURSOR, catchMouse);
                     }
                 }
+                sceneManager.keyEvent(key, action, mods);
             }
         };
         mouseButtonCallback = new GLFWMouseButtonCallback() {
             @Override
             public void invoke(long window, int button, int action, int mods) {
-
+                sceneManager.mouseButtonEvent(button, action);
             }
         };
         cursorPosCallback = new GLFWCursorPosCallback() {
             @Override
             public void invoke(long window, double xpos, double ypos) {
-                Log.log(xpos + " " + ypos);
+                sceneManager.mousePositionEvent(xpos, ypos);
             }
         };
     }
@@ -69,12 +74,15 @@ public class Application {
     public void init() {
         window.initWindow();
         window.initCallbacks(windowSizeCallback, keyCallback, mouseButtonCallback, cursorPosCallback);
-        sceneManager.init();
+        sceneManager.init(window.handle, windowConfig.width, windowConfig.height);
+        glDisable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void run() {
         while (!window.shouldClose()) {
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            sceneManager.update();
             sceneManager.render();
             window.swapBuffers();
             glfwPollEvents();
