@@ -44,7 +44,7 @@ public class Application {
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 if (action == GLFW_PRESS) {
                     if (key == GLFW_KEY_ESCAPE) {
-                        glfwSetWindowShouldClose(window, true);
+//                        glfwSetWindowShouldClose(window, true);
                     } else if (key == GLFW_KEY_LEFT) {
                         sceneManager.prevScene();
                     } else if (key == GLFW_KEY_RIGHT) {

@@ -6,7 +6,7 @@ import static org.lwjgl.stb.STBPerlin.stb_perlin_fbm_noise3;
 
 public class I_Terrain extends H_IndividualFacesScene {
 
-    private static final int CHUNK_SIZE = 100;
+    private static final int CHUNK_SIZE = 50;
     private static final int CHUNK_SIZE_MINUS_ONE = CHUNK_SIZE - 1;
     private static final int BLOCK_AIR = 0;
     private static final int BLOCK_GRASS = 1;
@@ -19,7 +19,7 @@ public class I_Terrain extends H_IndividualFacesScene {
             for (int y = 0; y < CHUNK_SIZE; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
                     float noiseValue = stb_perlin_fbm_noise3(x, y, z, 0.1f, 0.5f, 2);
-                    if (noiseValue > 0.2f) {
+                    if (noiseValue > 0.14f) {
                         chunkBlocks[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = BLOCK_GRASS;
                     } else {
                         chunkBlocks[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = BLOCK_AIR;
