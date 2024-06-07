@@ -17,15 +17,34 @@ public class SceneManager {
     private long window;
 
     public SceneManager() {
+        for (int i = 0; i < 11; i++){
+            addScene(new Slide(i + ".jpg"));
+        }
         addScene(new A_TriangleScene());
+        for (int i = 12; i < 15; i++){
+            addScene(new Slide(i + ".jpg"));
+        }
         addScene(new B_HalfQuadScene());
+        addScene(new Slide("16.jpg"));
         addScene(new C_QuadScene());
+        for (int i = 18; i < 25; i++){
+            addScene(new Slide(i + ".jpg"));
+        }
         addScene(new D_ThreeDQuadScene());
+        addScene(new Slide("26.jpg"));
         addScene(new E_CubeScene());
+        addScene(new Slide("28.jpg"));
         addScene(new F_TexturedCubeScene());
+        addScene(new Slide("30.jpg"));
         addScene(new G_MultiDirtScene());
+        addScene(new Slide("32.jpg"));
         addScene(new H_IndividualFacesScene());
+        addScene(new Slide("34.jpg"));
+        addScene(new Slide("35.jpg"));
         addScene(new I_Terrain());
+        addScene(new Slide("37.jpg"));
+        addScene(new Slide("38.jpg"));
+        addScene(new Slide("39.jpg"));
     }
 
     public void init(long window, int width, int height) {

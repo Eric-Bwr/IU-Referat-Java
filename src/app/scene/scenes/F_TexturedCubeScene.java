@@ -83,9 +83,9 @@ public class F_TexturedCubeScene extends Scene3D {
         transformationMatrix = Mat4f.identity();
         camera = new CameraFPS(new Vec3f(0, 0, 12.0f), 0f, 0f);
 
-        textureBottom = new Texture("Dirt.png", true);
-        textureSide = new Texture("GrassSide.png", false);
-        textureTop = new Texture("Grass.png", true);
+        textureBottom = new Texture("Dirt.png", true, false);
+        textureSide = new Texture("GrassSide.png", false, false);
+        textureTop = new Texture("Grass.png", true, false);
         rotationAxis = new Vec3f(0.0f, 1.0f, 0.0f);
 
         shader = new Shader("F-H.glsl");

@@ -8,6 +8,7 @@ import app.rendering.buffer.VertexBufferObjectLayout;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 public class Slide extends Scene {
@@ -23,7 +24,7 @@ public class Slide extends Scene {
     public void init(int width, int height) {
         shader = new Shader("/0_DisplayTexture.glsl");
         shader.bind();
-        texture = new Texture(slide, true);
+        texture = new Texture(slide, true, true);
         texture.bind();
         vao = new VertexArrayObject();
         vertexCount = 6;
@@ -48,6 +49,7 @@ public class Slide extends Scene {
     @Override
     public void render() {
         shader.bind();
+        texture.bind();
         vao.bind();
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     }
